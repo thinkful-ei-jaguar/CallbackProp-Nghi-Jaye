@@ -78,10 +78,8 @@ class App extends Component {
 
   handleAddItem = (index) => {
     const newItem = this.newRandomCard();
-    console.log(newItem);
     const newCardIds = this.state.lists[index].cardIds.push(newItem.id);
     const newAllCards = this.state.allCards;
-    console.log(newAllCards);
     // Created new key value pair in all cards
     newAllCards[newItem.id] = newItem;
     this.setState({
@@ -98,8 +96,9 @@ class App extends Component {
           <h1>Trelloyes!</h1>
         </header>
         <div className='App-list'>
-          {this.state.lists.map(list => (
-            <List
+          {this.state.lists.map(list => {
+            console.log(list.cardIds);
+            return (<List
               id={list.id}
               key={list.id}
               header={list.header}
@@ -107,7 +106,9 @@ class App extends Component {
               delete={this.handleDeleteItem}
               add={this.handleAddItem}
             />
-          ))}
+          );
+          }
+          )}
         </div>
       </main>
     );
