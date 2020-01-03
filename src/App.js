@@ -76,17 +76,35 @@ class App extends Component {
     }
   }
 
-  handleAddItem = (index) => {
+  handleAddItem = (listID) => {
+    // Newly generate card
     const newItem = this.newRandomCard();
-    const newCardIds = this.state.lists[index].cardIds.push(newItem.id);
+
+    // Creates new sets of Card Ids for the altering list else, return same list
+    const newList = this.state.lists.map(obj => {
+      if (obj.id === listID) {
+        return {
+          ...obj,
+          cardIds: [...obj.cardIds, newItem.id]};
+        }
+        else {
+          return obj;
+        }
+      });
+
+    // Creates new sets of deck
     const newAllCards = this.state.allCards;
-    // Created new key value pair in all cards
+
+    // Creats new key value pair in all cards
     newAllCards[newItem.id] = newItem;
+
+    // Updates state
     this.setState({
-      lists: this.state.lists.map(list => ({...list, cardIds: newCardIds})),
+      lists: newList,
       allCards: newAllCards
     });
   }
+
 
 
   render() {
@@ -97,7 +115,6 @@ class App extends Component {
         </header>
         <div className='App-list'>
           {this.state.lists.map(list => {
-            console.log(list.cardIds);
             return (<List
               id={list.id}
               key={list.id}
