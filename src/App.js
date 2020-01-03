@@ -44,12 +44,13 @@ class App extends Component {
   };
 
   handleDeleteItem = (id) => {
-    console.log('I am being called')
     let newLists = [];
+    // Loops through each object in lists to filter out cardIds
     for(let i = 0; i < this.state.lists.length; i++) {
       let newCardIds = this.state.lists[i].cardIds.filter(card => 
         card !== id 
       );
+      // Create a new filtered object to push to lists
       let list = {
         id: this.state.lists[i].id,
         header: this.state.lists[i].header,
@@ -57,10 +58,38 @@ class App extends Component {
       };
       newLists.push(list);
     }
+    // Update lists
     this.setState({
       lists: newLists
     })
   }
+
+
+  // Generate a new random card
+  newRandomCard = () => {
+    const id = Math.random().toString(36).substring(2, 4)
+    + Math.random().toString(36).substring(2, 4);
+    return {
+    id,
+    title: `Random Card ${id}`,
+    content: 'lorem ipsum'
+    }
+  }
+
+  handleAddItem = (index) => {
+    const newItem = this.newRandomCard();
+    console.log(newItem);
+    const newCardIds = this.state.lists[index].cardIds.push(newItem.id);
+    const newAllCards = this.state.allCards;
+    console.log(newAllCards);
+    // Created new key value pair in all cards
+    newAllCards[newItem.id] = newItem;
+    this.setState({
+      lists: this.state.lists.map(list => ({...list, cardIds: newCardIds})),
+      allCards: newAllCards
+    });
+  }
+
 
   render() {
     return (
@@ -71,10 +100,12 @@ class App extends Component {
         <div className='App-list'>
           {this.state.lists.map(list => (
             <List
+              id={list.id}
               key={list.id}
               header={list.header}
               cards={list.cardIds.map(id => this.state.allCards[id])}
               delete={this.handleDeleteItem}
+              add={this.handleAddItem}
             />
           ))}
         </div>
